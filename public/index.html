@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI Eğitim Uygulaması</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <h1>AI Eğitim Uygulaması</h1>
+            <a href="liste.html" class="listeLink">Kütüphaneye Git</a>
+        </header>
+
+        <div class="card">
+            <div class="form-grid">
+                <div class="full" style="margin-bottom: 10px;">
+                    <button onclick="ornekDoldur()" class="soft-btn">Örnek Konu Getir (Hazır Metin)</button>
+                </div>
+                <div>
+                    <label>Sınıf Seviyesi</label>
+                    <select id="sinif">
+                        <option value="1.Sınıf">1.Sınıf</option>
+                        <option value="2.Sınıf">2.Sınıf</option>
+                        <option value="3.Sınıf">3.Sınıf</option>
+                        <option value="4.Sınıf">4.Sınıf</option>
+                        <option value="5.Sınıf">5.Sınıf</option>
+                        <option value="6.Sınıf">6.Sınıf</option>
+                        <option value="7.Sınıf">7.Sınıf</option>
+                        <option value="8.Sınıf">8.Sınıf</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Ders</label>
+                    <input type="text" id="ders" placeholder="Örn: Fen Bilimleri">
+                </div>
+
+                <div class="full">
+                    <label>Ünite Adı</label>
+                    <input type="text" id="unite" placeholder="Örn: Güneş Sistemi">
+                </div>
+
+
+
+                <div class="full">
+                    <label>Konu Başlığı</label>
+                    <input type="text" id="konu" placeholder="Örn: Güneş Sistemi ve Gezegenler">
+                </div>
+
+                <div class="full">
+                    <label>Kazanım</label>
+                    <textarea id="kazanim" rows="3" placeholder="Görselde ne anlatılmalı?"></textarea>
+                </div>
+            </div>
+
+            <button onclick="gorselUret()" class="olusturButon" id="butonMetin">Görseli Oluştur</button>
+        </div>
+
+        <div id="sonucAlani" class="preview">
+            <h3 id="durum"></h3>
+
+            <div id="bilgiOzeti"></div>
+
+            <img id="onizleme" src="" alt="Olusan Gorsel"
+                style="max-width: 100%; border-radius: 8px; display: none; margin: 0 auto;">
+
+            <div id="onayButonlari" class="actionButtons" style="display:none; margin-top: 20px;">
+                <button onclick="kaydet()" id="onayButon">Beğendim, Kaydet</button>
+                <button onclick="iptal()" id="redButon">Tekrar Dene / Sil</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mevcutGorselYolu = "";
+
+        async function gorselUret() {
+            const buton = document.getElementById("butonMetin");
+            const durum = document.getElementById("durum");
+            const img = document.getElementById("onizleme");
+            const bilgiOzeti = document.getElementById("bilgiOzeti");
+
+            const veri = {
+                sinif: document.getElementById("sinif").value,
+                ders: document.getElementById("ders").value,
+                unite: document.getElementById("unite").value,
+                konu: document.getElementById("konu").value,
+                kazanim: document.getElementById("kazanim").value
+            };
+
+            if (!veri.konu || !veri.kazanim) return alert("Lütfen konu ve kazanım alanlarını doldurun!");
+
+            buton.disabled = true;
+            durum.innerText = "Yapay zeka çiziyor, lütfen bekleyin...";
+            img.style.display = "none";
+            bilgiOzeti.innerHTML = ""; // Eski özeti temizle
+            document.getElementById("onayButonlari").style.display = "none";
+
+            try {
+                const response = await fetch("/gorsel-olustur", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(veri)
+                });
+
+                const sonuc = await response.json();
+
+                if (sonuc.gorselYolu) {
+                    mevcutGorselYolu = sonuc.gorselYolu;
+                    img.src = mevcutGorselYolu;
+                    img.style.display = "block";
+                    durum.innerText = "Görsel Hazır!";
+
+                    // Döküman Madde 2: Ön izleme bilgilerini ekrana basma
+                    bilgiOzeti.innerHTML = `
+                        <div class="info-box">
+                            <b>Sınıf Seviyesi:</b> ${veri.sinif}<br>
+                            <b>Ders / Ünite:</b> ${veri.ders} - ${veri.unite || 'Genel'}<br>
+                            <b>Konu:</b> ${veri.konu}<br>
+                            <b>Üretilen Metin (Kazanım):</b> <i>${veri.kazanim}</i>
+                        </div>
+                    `;
+
+                    document.getElementById("onayButonlari").style.display = "block";
+                }
+            } catch (err) {
+                durum.innerText = "Bir hata oluştu.";
+                console.error(err);
+            } finally {
+                buton.disabled = false;
+            }
+        }
+
+        async function kaydet() {
+            const veri = {
+                sinif: document.getElementById("sinif").value,
+                ders: document.getElementById("ders").value,
+                unite: document.getElementById("unite").value,
+                konu: document.getElementById("konu").value,
+                kazanim: document.getElementById("kazanim").value,
+                gorsel: mevcutGorselYolu
+            };
+
+            try {
+                const response = await fetch("/gorsel-kaydet", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(veri)
+                });
+
+                if (response.ok) {
+                    alert("Görsel başarıyla kütüphaneye eklendi!");
+                    location.reload();
+                }
+            } catch (err) {
+                alert("Kaydetme sırasında bir hata oluştu.");
+            }
+        }
+
+        async function iptal() {
+            if (!confirm("Bu görseli silmek istediğinize emin misiniz?")) return;
+
+            try {
+                await fetch("/gorsel-sil", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ gorselYolu: mevcutGorselYolu })
+                });
+                location.reload();
+            } catch (err) {
+                alert("Silme işlemi başarısız.");
+            }
+        }
+
+        function ornekDoldur() {
+            document.getElementById("sinif").value = "5.Sınıf";
+            document.getElementById("ders").value = "Fen Bilimleri";
+            document.getElementById("unite").value = "Güneş, Dünya ve Ay";
+            document.getElementById("konu").value = "Ay'ın Evreleri";
+            document.getElementById("kazanim").value = "Ay'ın evrelerini gösteren sade ve eğitici bir şema.";
+        }
+    </script>
+</body>
+
+</html>

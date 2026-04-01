@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Görsel Kütüphanesi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <h1>Görsel Kütüphanesi</h1>
+            <a href="index.html" class="listeLink">Yeni Üret</a>
+        </header>
+
+        <div id="galeriAlani" class="galeri">
+        </div>
+    </div>
+
+    <script>
+        async function listele() {
+            const galeri = document.getElementById("galeriAlani");
+            try {
+                const response = await fetch("/tum-gorseller");
+                const veriler = await response.json();
+
+                if (veriler.length === 0) {
+                    galeri.innerHTML = "<p>Henüz kayıtlı görsel yok.</p>";
+                    return;
+                }
+
+                // Her kartın içine İndir ve Sil butonlarını eklendi
+                galeri.innerHTML = veriler.map(item => `
+    <div class="item" id="kart-${item.id}">
+        <img src="${item.gorsel}" alt="AI Görsel">
+        <div class="item-info">
+            <h4>${item.konu}</h4>
+            <p><strong>${item.sinif} - ${item.ders}</strong></p>
+            <p><em>Ünite: ${item.unite || 'Belirtilmedi'}</em></p>
+            <p>${item.kazanim}</p>
+            <p class="tarih-etiket"><small> ${item.tarih || 'Tarih yok'}</small></p>
+        </div>
+        
+        <div class="card-actions">
+            <a href="${item.gorsel}" download="${item.konu}.png" class="indirBtn"> İndir</a>
+            <button onclick="gorselSil(${item.id}, '${item.gorsel}')" class="silBtn"> Sil</button>
+        </div>
+    </div>
+`).join('');
+            } catch (err) {
+                galeri.innerHTML = "<p>Veriler yüklenirken hata oluştu.</p>";
+            }
+        }
+
+        async function gorselSil(id, yol) {
+            if (!confirm("Bu görseli kütüphaneden kalıcı olarak silmek istiyor musunuz?")) return;
+
+            try {
+                const response = await fetch("/gorsel-sil-veritabani", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id: id, gorselYolu: yol })
+                });
+
+                if (response.ok) {
+                    // Sayfayı yenilemeden kartı DOM'dan kaldırıyoruz
+                    const element = document.getElementById(`kart-${id}`);
+                    if (element) element.remove();
+
+                    // Eğer hiç kart kalmadıysa mesaj göster
+                    const galeri = document.getElementById("galeriAlani");
+                    if (galeri.children.length === 0) {
+                        galeri.innerHTML = "<p>Henüz kayıtlı görsel yok.</p>";
+                    }
+                }
+            } catch (err) {
+                alert("Silme işlemi sırasında hata oluştu.");
+            }
+        }
+
+        listele();
+    </script>
+</body>
+
+</html>

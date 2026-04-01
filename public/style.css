@@ -1,0 +1,348 @@
+/* --- Genel Ayarlar & Değişkenler --- */
+:root {
+    --primary: #4361ee;
+    --secondary: #3f37c9;
+    --success: #10b981;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --text: #1e293b;
+    --white: #ffffff;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    --border: #e2e8f0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+/* --- Sayfa Kapsayıcı --- */
+.wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* --- Başlık Alanı --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+}
+
+.listeLink {
+    text-decoration: none;
+    background: var(--white);
+    color: var(--primary);
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--primary);
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.listeLink:hover {
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* --- Form Kartı --- */
+.card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.full {
+    grid-column: span 2;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: 0.2s;
+    background: #fdfdfd;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+/* --- Butonlar --- */
+.olusturButon {
+    width: 100%;
+    margin-top: 25px;
+    padding: 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.olusturButon:hover {
+    background: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+}
+
+.olusturButon:disabled {
+    background: #cbd5e1;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.soft-btn {
+    background: #e0e7ff;
+    color: #4338ca;
+    border: 1px solid #c7d2fe;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: 0.2s;
+}
+
+.soft-btn:hover {
+    background: #c7d2fe;
+}
+
+/* --- ÖN İZLEME ALANI --- */
+.preview {
+    margin-top: 40px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.info-box {
+    background-color: #f0f7ff;
+    border: 1px solid #cce3ff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    text-align: left;
+    font-size: 0.95rem;
+    color: #334155;
+}
+
+.info-box b {
+    color: var(--primary);
+    display: inline-block;
+    width: 110px;
+}
+
+.info-box i {
+    display: block;
+    margin-top: 10px;
+    background: var(--white);
+    padding: 12px;
+    border-radius: 6px;
+    border-left: 4px solid var(--primary);
+    font-style: normal;
+}
+
+#onizleme {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin: 10px auto 25px;
+    border: 4px solid var(--white);
+}
+
+/* --- Onay & İptal Butonları --- */
+.actionButtons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+#onayButon,
+#redButon {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    color: white;
+}
+
+#onayButon {
+    background: var(--success);
+}
+
+#onayButon:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+#redButon {
+    background: var(--danger);
+}
+
+#redButon:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
+
+/* --- KÜTÜPHANE GALERİ (liste.html) --- */
+.galeri {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.item {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    transition: 0.3s;
+    border: 1px solid var(--border);
+}
+
+.item:hover {
+    transform: translateY(-8px);
+}
+
+.item img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    height: 250px;
+    object-fit: cover;
+}
+
+.card-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.indirBtn,
+.silBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+}
+
+/* İndir Butonu: Yeşil Tonları */
+.indirBtn {
+    background-color: #ecfdf5;
+    color: #059669;
+    border: 1px solid #10b981;
+}
+
+.indirBtn:hover {
+    background-color: #10b981;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Sil Butonu: Kırmızı Tonları */
+.silBtn {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #ef4444;
+}
+
+.silBtn:hover {
+    background-color: #ef4444;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Buton içindeki ikonlar için küçük ayar */
+.indirBtn span,
+.silBtn span {
+    font-size: 1.1rem;
+}
+
+/* --- Mobil Uyum --- */
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: span 1;
+    }
+
+    .actionButtons {
+        flex-direction: column;
+    }
+
+    .wrapper {
+        margin: 10px auto;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
